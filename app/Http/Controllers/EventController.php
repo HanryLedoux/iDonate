@@ -37,7 +37,7 @@ class EventController extends Controller
             'description' => 'required|string',
             'event_date' => 'required|date',
             'location' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
 
         $imagePath = null;

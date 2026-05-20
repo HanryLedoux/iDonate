@@ -11,10 +11,26 @@ class DonationController extends Controller
 {
     public function index()
     {
-        $myDonations = Donation::with(['foodItem.company', 'receiver'])
-            ->where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $user = Auth::user();
+
+        if ($user->role === 'doador') {
+            $company = $user->company;
+            if (!$company) {
+                $myDonations = collect();
+            } else {
+                $myDonations = Donation::with(['foodItem.company', 'receiver'])
+                    ->whereHas('foodItem', function ($q) use ($company) {
+                        $q->where('company_id', $company->id);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }
+        } else {
+            $myDonations = Donation::with(['foodItem.company', 'receiver'])
+                ->where('user_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
 
         return view('donations.index', compact('myDonations'));
     }

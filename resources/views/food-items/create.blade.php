@@ -43,7 +43,7 @@
                                             <input id="image" name="image" type="file" class="sr-only" accept="image/png, image/jpeg, image/jpg">
                                         </label>
                                     </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG até 2MB</p>
+                                    <p class="text-xs text-gray-500">PNG, JPG até 10MB</p>
                                 </div>
                             </div>
                             <x-input-error :messages="$errors->get('image')" class="mt-2" />

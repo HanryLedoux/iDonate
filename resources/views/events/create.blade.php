@@ -52,7 +52,7 @@
                                             <input id="image" name="image" type="file" class="sr-only" accept="image/png, image/jpeg, image/jpg" onchange="document.getElementById('event-file-name').textContent = this.files[0] ? this.files[0].name : 'Faça upload de um arquivo'">
                                         </label>
                                     </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG, GIF até 2MB</p>
+                                    <p class="text-xs text-gray-500">PNG, JPG, GIF até 10MB</p>
                                 </div>
                             </div>
                             <x-input-error :messages="$errors->get('image')" class="mt-2" />

@@ -19,7 +19,7 @@ class FoodItemController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'quantity' => 'required|integer|min:1',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
 
         $imagePath = null;
