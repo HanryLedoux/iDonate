@@ -18,6 +18,29 @@
             body { font-family: 'Outfit', sans-serif; }
             input, select, textarea { color: #111 !important; }
             input::placeholder, textarea::placeholder { color: #9ca3af !important; }
+            select.custom-dropdown {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                padding-right: 3rem;
+            }
+            .dropdown-arrow {
+                position: absolute;
+                top: 50%;
+                right: 1rem;
+                width: 1rem;
+                height: 1rem;
+                transform: translateY(-50%) rotate(90deg);
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23111' stroke-width='2'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+                pointer-events: none;
+                transition: transform 0.2s ease;
+            }
+            .select-wrapper:focus-within .dropdown-arrow {
+                transform: translateY(-50%) rotate(0deg);
+            }
         </style>
         <script>
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

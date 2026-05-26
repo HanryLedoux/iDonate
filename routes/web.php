@@ -34,6 +34,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/donations', [\App\Http\Controllers\DonationController::class, 'index'])->name('donations.index');
     Route::post('/donations', [\App\Http\Controllers\DonationController::class, 'store'])->name('donations.store');
+    Route::delete('/donations/{donation}', [\App\Http\Controllers\DonationController::class, 'destroy'])->name('donations.destroy');
+    Route::post('/donations/{donation}/cancel', [\App\Http\Controllers\DonationController::class, 'cancel'])->name('donations.cancel');
+    Route::post('/donations/{donation}/partial-cancel', [\App\Http\Controllers\DonationController::class, 'partialCancel'])->name('donations.partialCancel');
+    
 });
 
 require __DIR__.'/auth.php';

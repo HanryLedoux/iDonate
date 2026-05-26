@@ -42,11 +42,15 @@
         <!-- Role Option -->
         <div class="mt-4">
             <x-input-label for="role" :value="__('Tipo de Usuário')" style="color:#d1d5db" />
-            <select id="role" name="role" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm" required style="background:#fff;border-color:rgba(255,255,255,0.2);color:#111">
-                <option value="voluntario" {{ old('role') == 'voluntario' ? 'selected' : '' }}>Voluntário</option>
-                <option value="doador" {{ old('role') == 'doador' ? 'selected' : '' }}>Doador</option>
-                <option value="receptor" {{ old('role') == 'receptor' ? 'selected' : '' }}>Receptor</option>
-            </select>
+            <div class="select-wrapper">
+                <select id="role" name="role" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm custom-dropdown" required style="background:#fff;border-color:rgba(255,255,255,0.2);color:#111">
+                    <option value="" disabled {{ old('role') ? '' : 'selected' }}>Selecione</option>
+                    <option value="voluntario" {{ old('role') == 'voluntario' ? 'selected' : '' }}>Voluntário</option>
+                    <option value="doador" {{ old('role') == 'doador' ? 'selected' : '' }}>Doador</option>
+                    <option value="receptor" {{ old('role') == 'receptor' ? 'selected' : '' }}>Receptor</option>
+                </select>
+                <span class="dropdown-arrow" aria-hidden="true"></span>
+            </div>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 

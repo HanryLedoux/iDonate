@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Donation extends Model
 {
-    protected $fillable = ['food_item_id', 'user_id', 'status'];
+    protected $fillable = ['food_item_id', 'user_id', 'status', 'quantity'];
+
+    protected $casts = [
+        'quantity' => 'integer',
+    ];
 
     public function foodItem()
     {

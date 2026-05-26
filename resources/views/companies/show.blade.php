@@ -37,27 +37,31 @@
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-0">
                     @foreach($company->foodItems as $item)
-                        <form action="{{ route('donations.store') }}" method="POST" class="group relative flex w-full py-6 border-b border-gray-100 dark:border-gray-700/60 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer rounded-xl px-2 -mx-2">
-                            @csrf
-                            <input type="hidden" name="food_item_id" value="{{ $item->id }}">
-                            <button type="submit" class="absolute inset-0 w-full h-full text-left" aria-label="Solicitar doação de {{ $item->title }}"></button>
-                            
-                            <div class="flex-1 pr-4 flex flex-col justify-between pointer-events-none">
-                                <div>
-                                    <h4 class="font-medium text-gray-900 dark:text-gray-100 text-base mb-1 group-hover:text-orange-600 transition-colors">{{ $item->title }}</h4>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-snug">{{ $item->description }}</p>
-                                </div>
+                        <div class="group relative flex w-full py-6 border-b border-gray-100 dark:border-gray-700/60 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors rounded-xl px-2 -mx-2 items-center">
+                            <div class="flex-1 pr-4">
+                                <h4 class="font-medium text-gray-900 dark:text-gray-100 text-base mb-1 group-hover:text-orange-600 transition-colors">{{ $item->title }}</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-snug">{{ $item->description }}</p>
                                 <div class="mt-3 flex items-center space-x-2">
                                     <span class="text-sm font-semibold text-green-600 dark:text-green-500">Grátis</span>
                                     <span class="text-xs text-gray-400">&bull;</span>
-                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400">
-                                        Qtd: {{ $item->quantity }}
-                                    </span>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Qtd disponível: {{ $item->quantity }}</span>
                                 </div>
+
+                                @if($item->quantity > 0)
+                                    <form action="{{ route('donations.store') }}" method="POST" class="mt-4 flex items-center space-x-3 donation-form">
+                                        @csrf
+                                        <input type="hidden" name="food_item_id" value="{{ $item->id }}">
+                                        <label class="text-sm text-gray-600">Quantidade</label>
+                                        <input name="quantity" type="number" min="1" max="{{ $item->quantity }}" value="1" class="w-20 ml-2 px-2 py-1 border rounded-md text-sm bg-white dark:bg-gray-800" />
+                                        <button type="submit" class="ml-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Solicitar</button>
+                                    </form>
+                                @else
+                                    <div class="mt-4 text-sm text-red-500">Esgotado</div>
+                                @endif
                             </div>
-                            
+
                             <!-- Image -->
-                            <div class="w-[110px] h-[110px] rounded-xl overflow-hidden shrink-0 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 pointer-events-none">
+                            <div class="w-[110px] h-[110px] rounded-xl overflow-hidden shrink-0 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
                                 @if($item->image_path)
                                     <img src="{{ Storage::url($item->image_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 @else
@@ -66,7 +70,7 @@
                                     </div>
                                 @endif
                             </div>
-                        </form>
+                        </div>
                     @endforeach
                 </div>
             @endif

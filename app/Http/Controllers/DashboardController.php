@@ -21,7 +21,12 @@ class DashboardController extends Controller
         } 
         elseif ($user->role === 'receptor') {
             $availableFoods = FoodItem::with('company')->where('is_available', true)->orderBy('created_at', 'desc')->get();
-            $myRequests = Donation::with('foodItem.company')->where('user_id', $user->id)->orderBy('created_at', 'desc')->limit(5)->get();
+            $myRequests = Donation::with('foodItem.company')
+                ->where('user_id', $user->id)
+                ->where('status', '!=', 'cancelled')
+                ->orderBy('created_at', 'desc')
+                ->limit(5)
+                ->get();
             return view('dashboards.receptor', compact('availableFoods', 'myRequests'));
         } 
         elseif ($user->role === 'voluntario') {

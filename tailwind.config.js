@@ -10,6 +10,18 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    safelist: [
+        'hover:border-orange-300',
+        'dark:hover:border-orange-600',
+        'group-hover:text-orange-600',
+        'hover:border-green-300',
+        'dark:hover:border-green-600',
+        'group-hover:text-green-600',
+        'hover:border-purple-300',
+        'dark:hover:border-purple-600',
+        'group-hover:text-purple-600',
+    ],
+
     theme: {
         extend: {
             fontFamily: {

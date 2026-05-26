@@ -31,7 +31,7 @@
             @else
                 <div class="space-y-4">
                     @foreach($myDonations as $donation)
-                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition-shadow">
+                        <div class="donation-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition-shadow">
                             {{-- Food thumbnail --}}
                             <div class="w-14 h-14 rounded-xl bg-gray-200 dark:bg-gray-700 flex-shrink-0 overflow-hidden">
                                 @if($donation->foodItem->image_path)
@@ -58,16 +58,23 @@
                                 {{ $donation->created_at->format('d/m/Y') }}
                             </div>
 
-                            {{-- Status badge --}}
-                            <div>
-                                @if($donation->status === 'pending')
-                                    <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">Pendente</span>
-                                @elseif($donation->status === 'approved')
-                                    <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">Aprovado</span>
-                                @elseif($donation->status === 'delivered')
-                                    <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Entregue</span>
-                                @else
-                                    <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Cancelado</span>
+                            {{-- Quantity and Status + Actions --}}
+                            <div class="flex items-center gap-3">
+                                <div class="text-sm text-gray-600 dark:text-gray-300">Qtd: <strong class="donation-quantity text-gray-900 dark:text-white">{{ $donation->quantity ?? 1 }}</strong></div>
+                                <div>
+                                    @if($donation->status === 'pending')
+                                        <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">Pendente</span>
+                                    @elseif($donation->status === 'approved')
+                                        <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">Aprovado</span>
+                                    @elseif($donation->status === 'delivered')
+                                        <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Entregue</span>
+                                    @else
+                                        <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Cancelado</span>
+                                    @endif
+                                </div>
+
+                                @if(Auth::id() == $donation->user_id && $donation->status === 'pending')
+                                    <button data-donation-id="{{ $donation->id }}" data-donation-qty="{{ $donation->quantity ?? 1 }}" class="ml-2 px-3 py-1.5 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition cancel-donation">Cancelar</button>
                                 @endif
                             </div>
                         </div>
@@ -78,3 +85,24 @@
         </div>
     </div>
 </x-app-layout>
+
+{{-- Non-blocking confirmation modal for canceling donations --}}
+<div id="cancel-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 px-4">
+    <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <div class="p-5">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Cancelar pedido</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Tem certeza que deseja cancelar este pedido? Esta ação pode ser desfeita apenas pelo sistema.</p>
+            <div class="mt-4">
+                <label for="cancel-modal-qty" class="text-sm text-gray-700 dark:text-gray-300">Quantidade a cancelar</label>
+                <div class="mt-2 flex items-center gap-3">
+                    <input id="cancel-modal-qty" type="number" min="1" value="1" class="w-24 px-3 py-2 rounded-md border text-black dark:text-black placeholder-gray-500" />
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Máximo disponível: <span id="cancel-modal-max">0</span></div>
+                </div>
+                <div class="mt-4 flex justify-end gap-3">
+                    <button id="cancel-modal-close" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200">Fechar</button>
+                    <button id="cancel-modal-confirm" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Confirmar cancelamento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
