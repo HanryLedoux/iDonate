@@ -70,7 +70,11 @@
                                         Organizado por {{ $event->creator->name ?? 'Anônimo' }}
                                     </div>
                                     
-                                    <div class="pt-4 border-t border-gray-100 dark:border-gray-700 mt-4">
+                                    <div class="pt-4 border-t border-gray-100 dark:border-gray-700 mt-4 space-y-3">
+                                        <a href="{{ route('events.show', $event->id) }}" class="block w-full py-2 text-center bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                                            Ver detalhes do evento
+                                        </a>
+
                                         @if(Auth::user()->role !== 'receptor')
                                             <button disabled class="w-full py-2 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-semibold rounded-lg flex items-center justify-center cursor-not-allowed">
                                                 Exclusivo para Receptores

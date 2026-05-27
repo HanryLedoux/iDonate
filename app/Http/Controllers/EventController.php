@@ -18,6 +18,14 @@ class EventController extends Controller
         return view('events.index', compact('events', 'userRegistrations'));
     }
 
+    public function show(Event $event)
+    {
+        $event->load('creator');
+        $userRegistrations = EventRegistration::where('user_id', Auth::id())->pluck('event_id')->toArray();
+
+        return view('events.show', compact('event', 'userRegistrations'));
+    }
+
     public function create()
     {
         if (Auth::user()->role !== 'doador') {

@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])->name('events.index');
     Route::get('/events/create', [\App\Http\Controllers\EventController::class, 'create'])->name('events.create');
+    Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
     Route::post('/events', [\App\Http\Controllers\EventController::class, 'store'])->name('events.store');
     Route::post('/events/{event}/register', [\App\Http\Controllers\EventController::class, 'register'])->name('events.register');
 
