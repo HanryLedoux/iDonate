@@ -25,6 +25,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/events', [\App\Http\Controllers\EventController::class, 'store'])->name('events.store');
     Route::post('/events/{event}/register', [\App\Http\Controllers\EventController::class, 'register'])->name('events.register');
 
+    // Alimentos no evento
+    Route::post('/events/{event}/food-items', [\App\Http\Controllers\EventFoodItemController::class, 'store'])->name('events.food-items.store');
+    Route::patch('/events/{event}/food-items/{foodItem}/status', [\App\Http\Controllers\EventFoodItemController::class, 'updateStatus'])->name('events.food-items.status');
+    Route::delete('/events/{event}/food-items/{foodItem}', [\App\Http\Controllers\EventFoodItemController::class, 'destroy'])->name('events.food-items.destroy');
+
     Route::get('/companies', [\App\Http\Controllers\CompanyController::class, 'index'])->name('companies.index');
     Route::get('/companies/{company}', [\App\Http\Controllers\CompanyController::class, 'show'])->name('companies.show');
     

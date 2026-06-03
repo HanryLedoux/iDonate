@@ -21,4 +21,14 @@ class Event extends Model
     {
         return $this->hasMany(EventRegistration::class);
     }
+
+    public function eventFoodItems()
+    {
+        return $this->hasMany(EventFoodItem::class);
+    }
+
+    public function foodItems()
+    {
+        return $this->belongsToMany(FoodItem::class, 'event_food_items')->withPivot('stock_status')->withTimestamps();
+    }
 }

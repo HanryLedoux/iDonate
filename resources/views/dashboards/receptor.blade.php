@@ -154,6 +154,12 @@
                 </div>
 
             </div>
+
+            <!-- Tabela de Alimentos -->
+            <div class="mt-8">
+                <x-food-items-table :foods="$allFoods" />
+            </div>
+
         </div>
     </div>
 </x-app-layout>

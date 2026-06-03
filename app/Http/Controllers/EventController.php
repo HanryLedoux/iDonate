@@ -11,7 +11,6 @@ class EventController extends Controller
 {
     public function index()
     {
-        // Pega todos os eventos ordenados pela data e carrega a relação das inscrições do usuário logado
         $events = Event::with('creator')->orderBy('event_date', 'asc')->get();
         $userRegistrations = EventRegistration::where('user_id', Auth::id())->pluck('event_id')->toArray();
 
@@ -20,10 +19,19 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        $event->load('creator');
+        $event->load('creator', 'foodItems');
         $userRegistrations = EventRegistration::where('user_id', Auth::id())->pluck('event_id')->toArray();
 
-        return view('events.show', compact('event', 'userRegistrations'));
+        // Alimentos da empresa do doador logado ainda não vinculados ao evento
+        $myFoodItems = collect();
+        if (Auth::user()->role === 'doador' && Auth::user()->company) {
+            $linkedIds = $event->foodItems->pluck('id');
+            $myFoodItems = Auth::user()->company->foodItems()
+                ->whereNotIn('id', $linkedIds)
+                ->get();
+        }
+
+        return view('events.show', compact('event', 'userRegistrations', 'myFoodItems'));
     }
 
     public function create()
@@ -41,11 +49,11 @@ class EventController extends Controller
         }
 
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'event_date' => 'required|date',
-            'location' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240'
+            'event_date'  => 'required|date',
+            'location'    => 'required|string|max:255',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
 
         $imagePath = null;
@@ -54,12 +62,12 @@ class EventController extends Controller
         }
 
         Event::create([
-            'user_id' => Auth::id(),
-            'title' => $request->title,
+            'user_id'     => Auth::id(),
+            'title'       => $request->title,
             'description' => $request->description,
-            'event_date' => $request->event_date,
-            'location' => $request->location,
-            'image_path' => $imagePath,
+            'event_date'  => $request->event_date,
+            'location'    => $request->location,
+            'image_path'  => $imagePath,
         ]);
 
         return redirect()->route('events.index')->with('success', 'Evento criado com sucesso!');
@@ -69,16 +77,14 @@ class EventController extends Controller
     {
         $user = Auth::user();
 
-        // Apenas recptores podem se inscrever
         if ($user->role !== 'receptor') {
             return redirect()->back()->with('info', 'Apenas usuários registrados como receptores podem se inscrever em eventos.');
         }
 
-        // Evita inscrição duplicada
         if (!EventRegistration::where('event_id', $event->id)->where('user_id', $user->id)->exists()) {
             EventRegistration::create([
                 'event_id' => $event->id,
-                'user_id' => $user->id
+                'user_id'  => $user->id
             ]);
             return redirect()->back()->with('success', 'Inscrição realizada com sucesso!');
         }

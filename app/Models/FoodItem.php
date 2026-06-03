@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class FoodItem extends Model
 {
-    protected $fillable = ['company_id', 'title', 'description', 'quantity', 'image_path', 'is_available'];
+    protected $fillable = ['company_id', 'title', 'description', 'quantity', 'image_path', 'is_available', 'expiry_date'];
 
     protected $casts = [
         'is_available' => 'boolean',
+        'expiry_date'  => 'date',
     ];
 
     public function company()
