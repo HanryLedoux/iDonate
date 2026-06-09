@@ -21,4 +21,9 @@ class Event extends Model
     {
         return $this->hasMany(EventRegistration::class);
     }
+
+    public function foodItems()
+    {
+        return $this->hasMany(FoodItem::class);
+    }
 }

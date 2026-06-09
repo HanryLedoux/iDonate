@@ -75,32 +75,34 @@
                             @if($foodItems->count() > 0)
                                 <div class="space-y-4">
                                     @foreach($foodItems as $food)
-                                        <div class="flex items-center p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-500 transition-colors">
-                                            <div class="w-16 h-16 rounded-xl bg-gray-200 dark:bg-gray-700 flex-shrink-0 overflow-hidden mr-4">
-                                                @if($food->image_path)
-                                                    <img src="{{ Storage::url($food->image_path) }}" class="w-full h-full object-cover">
-                                                @else
-                                                    <div class="w-full h-full flex items-center justify-center text-gray-400">
-                                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="flex-1 min-w-0 pr-4">
-                                                <h4 class="text-base font-bold text-gray-900 dark:text-white truncate">{{ $food->title }}</h4>
-                                                <div class="flex gap-3 text-sm mt-1">
-                                                    <span class="text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($food->created_at)->format('d/m') }}</span>
-                                                    @if($food->is_available)
-                                                        <span class="text-green-600 dark:text-green-400 font-semibold flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> Disponível</span>
+                                        <a href="{{ route('food-items.show', $food->id) }}" class="block">
+                                            <div class="flex items-center p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-500 transition-colors">
+                                                <div class="w-16 h-16 rounded-xl bg-gray-200 dark:bg-gray-700 flex-shrink-0 overflow-hidden mr-4">
+                                                    @if($food->image_path)
+                                                        <img src="{{ Storage::url($food->image_path) }}" class="w-full h-full object-cover">
                                                     @else
-                                                        <span class="text-red-600 dark:text-red-400 font-semibold flex items-center"><span class="w-2 h-2 rounded-full bg-red-500 mr-1.5"></span> Esgotado</span>
+                                                        <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                        </div>
                                                     @endif
                                                 </div>
+                                                <div class="flex-1 min-w-0 pr-4">
+                                                    <h4 class="text-base font-bold text-gray-900 dark:text-white truncate">{{ $food->title }}</h4>
+                                                    <div class="flex gap-3 text-sm mt-1">
+                                                        <span class="text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($food->created_at)->format('d/m') }}</span>
+                                                        @if($food->is_available)
+                                                            <span class="text-green-600 dark:text-green-400 font-semibold flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> Disponível</span>
+                                                        @else
+                                                            <span class="text-red-600 dark:text-red-400 font-semibold flex items-center"><span class="w-2 h-2 rounded-full bg-red-500 mr-1.5"></span> Esgotado</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <div class="text-2xl font-black text-gray-800 dark:text-white">{{ $food->quantity }}</div>
+                                                    <div class="text-xs text-gray-500 uppercase tracking-wide">QTD</div>
+                                                </div>
                                             </div>
-                                            <div class="text-right">
-                                                <div class="text-2xl font-black text-gray-800 dark:text-white">{{ $food->quantity }}</div>
-                                                <div class="text-xs text-gray-500 uppercase tracking-wide">QTD</div>
-                                            </div>
-                                        </div>
+                                        </a>
                                     @endforeach
                                 </div>
                             @else
@@ -130,19 +132,21 @@
                         @if($myEvents->count() > 0)
                             <div class="space-y-3">
                                 @foreach($myEvents as $event)
-                                    <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-green-300 dark:hover:border-green-600 transition-colors">
-                                        <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
-                                            <span class="text-sm font-black text-green-600 dark:text-green-400">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</span>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $event->title }}</h4>
-                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex items-center">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                                <span class="truncate">{{ $event->location }}</span>
+                                    <a href="{{ route('events.show', $event->id) }}" class="block">
+                                        <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-green-300 dark:hover:border-green-600 transition-colors">
+                                            <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+                                                <span class="text-sm font-black text-green-600 dark:text-green-400">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</span>
                                             </div>
+                                            <div class="flex-1 min-w-0">
+                                                <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $event->title }}</h4>
+                                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex items-center">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                                    <span class="truncate">{{ $event->location }}</span>
+                                                </div>
+                                            </div>
+                                            <span class="text-xs font-bold text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/30 px-2 py-1 rounded-lg flex-shrink-0">{{ \Carbon\Carbon::parse($event->event_date)->format('d/m') }}</span>
                                         </div>
-                                        <span class="text-xs font-bold text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/30 px-2 py-1 rounded-lg flex-shrink-0">{{ \Carbon\Carbon::parse($event->event_date)->format('d/m') }}</span>
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         @else

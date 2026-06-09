@@ -88,7 +88,7 @@
                         @if($myRequests->count() > 0)
                             <div class="space-y-3">
                                 @foreach($myRequests as $request)
-                                    <div class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors border border-gray-100 dark:border-gray-600">
+                                    <a href="{{ route('food-items.show', $request->foodItem->id) }}" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors border border-gray-100 dark:border-gray-600">
                                         <div class="w-11 h-11 rounded-lg bg-gray-200 dark:bg-gray-700 flex-shrink-0 overflow-hidden">
                                             @if($request->foodItem->image_path)
                                                 <img src="{{ Storage::url($request->foodItem->image_path) }}" class="w-full h-full object-cover">
@@ -113,7 +113,7 @@
                                                 <span class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Cancelado</span>
                                             @endif
                                         </div>
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         @else

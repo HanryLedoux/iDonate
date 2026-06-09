@@ -84,6 +84,145 @@
                                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ __('Visão Geral') }}</h2>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Este espaço exibe todos os detalhes do evento, para que qualquer usuário autenticado possa revisar a descrição e o local antes de decidir participar.') }}</p>
                             </div>
+
+                            <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700">
+                                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Alimentos vinculados ao evento</h2>
+
+                                @if($event->foodItems && $event->foodItems->count() > 0)
+                                    <div class="space-y-3">
+                                        @foreach($event->foodItems as $item)
+                                            <div class="flex items-center justify-between p-3 border rounded-xl" data-food-item-id="{{ $item->id }}">
+                                                <div>
+                                                    <div class="font-semibold">{{ $item->title }}</div>
+                                                    <div class="text-sm text-gray-500">Qtd: <span class="food-quantity">{{ $item->quantity }}</span> — <span class="food-availability">{{ $item->is_available ? 'Disponível' : 'Esgotado' }}</span></div>
+                                                </div>
+
+                                                <div class="flex items-center gap-2">
+                                                    @php $user = Auth::user(); @endphp
+                                                    @if($user && $user->id === $event->user_id)
+                                                        <button class="btn-edit px-3 py-1 bg-yellow-500 text-white rounded-lg">Editar</button>
+                                                    @endif
+
+                                                    @if($user && $user->role === 'receptor')
+                                                        <form action="{{ route('donations.store') }}" method="POST" class="inline-block">
+                                                            @csrf
+                                                            <input type="hidden" name="food_item_id" value="{{ $item->id }}" />
+                                                            <button class="px-3 py-1 bg-green-600 text-white rounded-lg">Pedir</button>
+                                                        </form>
+                                                    @else
+                                                        <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg cursor-not-allowed" disabled title="Apenas receptores podem solicitar alimentos">Pedir (somente receptores)</button>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <script>
+                                        (function(){
+                                            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                                            // simple toast helper
+                                            function showToast(msg, timeout = 3500){
+                                                let toast = document.getElementById('e2e-toast');
+                                                if(!toast){
+                                                    toast = document.createElement('div');
+                                                    toast.id = 'e2e-toast';
+                                                    toast.style.position = 'fixed';
+                                                    toast.style.right = '20px';
+                                                    toast.style.bottom = '20px';
+                                                    toast.style.zIndex = 9999;
+                                                    document.body.appendChild(toast);
+                                                }
+                                                const el = document.createElement('div');
+                                                el.textContent = msg;
+                                                el.style.background = 'rgba(0,0,0,0.8)';
+                                                el.style.color = '#fff';
+                                                el.style.padding = '8px 12px';
+                                                el.style.borderRadius = '8px';
+                                                el.style.marginTop = '6px';
+                                                toast.appendChild(el);
+                                                setTimeout(()=> el.remove(), timeout);
+                                            }
+
+                                            function showUndo(li, prev){
+                                                // create small undo UI and update in-memory prev
+                                                let container = li.querySelector('.e2e-undo');
+                                                if(container) container.remove();
+                                                container = document.createElement('div');
+                                                container.className = 'e2e-undo mt-2 text-sm';
+                                                container.innerHTML = 'Alteração salva.';
+                                                const undo = document.createElement('button');
+                                                undo.textContent = 'Desfazer';
+                                                undo.className = 'ml-3 px-2 py-1 bg-gray-200 rounded';
+                                                container.appendChild(undo);
+                                                li.appendChild(container);
+                                                const timer = setTimeout(()=> container.remove(), 7000);
+                                                undo.addEventListener('click', async ()=>{
+                                                    clearTimeout(timer);
+                                                    try{
+                                                        const res = await fetch(`/food-items/${li.dataset.foodItemId}`, {
+                                                            method: 'PATCH',
+                                                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token },
+                                                            body: JSON.stringify(prev)
+                                                        });
+                                                        if(!res.ok) throw new Error('undo failed');
+                                                        // revert DOM without reload
+                                                        li.querySelector('.food-quantity').textContent = prev.quantity;
+                                                        li.querySelector('.food-availability').textContent = prev.is_available? 'Disponível':'Esgotado';
+                                                        container.remove();
+                                                        showToast('Alteração desfeita');
+                                                    }catch(e){
+                                                        console.warn(e);
+                                                        showToast('Falha ao desfazer');
+                                                    }
+                                                });
+                                            }
+
+                                            document.querySelectorAll('div[data-food-item-id]').forEach(li=>{
+                                                const id = li.dataset.foodItemId;
+                                                const editBtn = li.querySelector('.btn-edit');
+                                                if(!editBtn) return;
+                                                editBtn.addEventListener('click', ()=>{
+                                                    const qtyEl = li.querySelector('.food-quantity');
+                                                    const availEl = li.querySelector('.food-availability');
+                                                    const prev = { quantity: parseInt(qtyEl.textContent,10)||0, is_available: availEl.textContent.trim() === 'Disponível' };
+                                                    const editor = document.createElement('div');
+                                                    editor.className = 'inline-editor flex items-center gap-2 mt-2';
+                                                    editor.innerHTML = `
+                                                        <input type="number" class="inline-quantity border px-2 py-1" value="${prev.quantity}" min="0" />
+                                                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="inline-available" ${prev.is_available? 'checked':''} /> Disponível</label>
+                                                        <button class="inline-save px-3 py-1 bg-blue-600 text-white rounded">Salvar</button>
+                                                        <button class="inline-cancel px-3 py-1 bg-gray-300 rounded">Cancelar</button>
+                                                    `;
+                                                    editBtn.insertAdjacentElement('afterend', editor);
+                                                    editBtn.style.display = 'none';
+                                                    editor.querySelector('.inline-cancel').addEventListener('click', ()=>{ editor.remove(); editBtn.style.display = ''; });
+                                                    editor.querySelector('.inline-save').addEventListener('click', async ()=>{
+                                                        const saveBtn = editor.querySelector('.inline-save');
+                                                        saveBtn.disabled = true;
+                                                        const q = parseInt(editor.querySelector('.inline-quantity').value,10)||0;
+                                                        const a = editor.querySelector('.inline-available').checked;
+                                                        try{
+                                                            const res = await fetch(`/food-items/${id}`, {
+                                                                method: 'PATCH',
+                                                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token },
+                                                                body: JSON.stringify({ quantity: q, is_available: a })
+                                                            });
+                                                            if(!res.ok) throw new Error('update failed');
+                                                            qtyEl.textContent = q;
+                                                            availEl.textContent = a? 'Disponível':'Esgotado';
+                                                            editor.remove(); editBtn.style.display = '';
+                                                            showUndo(li, prev);
+                                                            showToast('Alteração salva');
+                                                        }catch(e){ alert('Falha ao salvar.'); }
+                                                        finally{ saveBtn.disabled = false; }
+                                                    });
+                                                });
+                                            });
+                                        })();
+                                    </script>
+                                @else
+                                    <div class="text-sm text-gray-500">Nenhum alimento vinculado a este evento.</div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

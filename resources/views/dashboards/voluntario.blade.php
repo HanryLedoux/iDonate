@@ -69,7 +69,8 @@
                     @if($upcomingEvents->count() > 0)
                         <div style="display:flex;flex-direction:column;gap:1rem;">
                             @foreach($upcomingEvents as $event)
-                                <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-green-300 dark:hover:border-green-600 transition-all" style="display:flex;gap:1.25rem;align-items:center;">
+                                <a href="{{ route('events.show', $event->id) }}" class="block">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-green-300 dark:hover:border-green-600 transition-all" style="display:flex;gap:1.25rem;align-items:center;">
                                     <div style="width:72px;min-width:72px;text-align:center;" class="bg-green-50 dark:bg-gray-700 rounded-xl p-3">
                                         <div class="text-2xl font-black text-green-600 dark:text-green-400">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</div>
                                         <div class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">{{ \Carbon\Carbon::parse($event->event_date)->format('M') }}</div>
@@ -82,7 +83,8 @@
                                         </div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1" style="overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ $event->description }}</p>
                                     </div>
-                                </div>
+                                    </div>
+                                </a>
                             @endforeach
                         </div>
                     @else
@@ -105,7 +107,7 @@
                         @if($myRegistrations->count() > 0)
                             <div style="display:flex;flex-direction:column;gap:0.75rem;">
                                 @foreach($myRegistrations as $reg)
-                                    <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600">
+                                    <a href="{{ route('events.show', $reg->event->id) }}" class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600">
                                         <div style="width:40px;height:40px;min-width:40px;" class="rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                                             <span class="text-sm font-black text-green-600 dark:text-green-400">{{ \Carbon\Carbon::parse($reg->event->event_date)->format('d') }}</span>
                                         </div>
@@ -113,7 +115,7 @@
                                             <p class="text-sm font-bold text-gray-900 dark:text-white" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $reg->event->title }}</p>
                                             <p class="text-xs text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($reg->event->event_date)->format('d/m/Y') }}</p>
                                         </div>
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         @else

@@ -15,16 +15,16 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('dashboard')" :active="\Illuminate\Support\Facades\Route::is('dashboard')">
                         {{ __('Painel Inicial') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
+                    <x-nav-link :href="route('events.index')" :active="\Illuminate\Support\Facades\Route::is('events.index')">
                         {{ __('Eventos e Ações') }}
                     </x-nav-link>
 
                     @if(auth()->check() && auth()->user()->role === 'receptor')
-                        <x-nav-link :href="route('donations.index')" :active="request()->routeIs('donations.index')">
+                        <x-nav-link :href="route('donations.index')" :active="\Illuminate\Support\Facades\Route::is('donations.index')">
                             {{ __('Meus Pedidos') }}
                         </x-nav-link>
                     @endif
@@ -102,16 +102,16 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('dashboard')" :active="\Illuminate\Support\Facades\Route::is('dashboard')">
                 {{ __('Painel Inicial') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
+            <x-responsive-nav-link :href="route('events.index')" :active="\Illuminate\Support\Facades\Route::is('events.index')">
                 {{ __('Eventos e Ações') }}
             </x-responsive-nav-link>
 
             @if(auth()->check() && auth()->user()->role === 'receptor')
-                <x-responsive-nav-link :href="route('donations.index')" :active="request()->routeIs('donations.index')">
+                <x-responsive-nav-link :href="route('donations.index')" :active="\Illuminate\Support\Facades\Route::is('donations.index')">
                     {{ __('Meus Pedidos') }}
                 </x-responsive-nav-link>
             @endif

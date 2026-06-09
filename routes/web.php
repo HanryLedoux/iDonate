@@ -21,7 +21,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])->name('events.index');
     Route::get('/events/create', [\App\Http\Controllers\EventController::class, 'create'])->name('events.create');
+    Route::get('/events/{event}/edit', [\App\Http\Controllers\EventController::class, 'edit'])->name('events.edit');
     Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
+    Route::patch('/events/{event}', [\App\Http\Controllers\EventController::class, 'update'])->name('events.update');
     Route::post('/events', [\App\Http\Controllers\EventController::class, 'store'])->name('events.store');
     Route::post('/events/{event}/register', [\App\Http\Controllers\EventController::class, 'register'])->name('events.register');
 
@@ -32,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/companies/{company}/food-items', [\App\Http\Controllers\FoodItemController::class, 'store'])->name('food-items.store');
     
     Route::get('/food-items/{food_item}', [\App\Http\Controllers\FoodItemController::class, 'show'])->name('food-items.show');
+    Route::patch('/food-items/{food_item}', [\App\Http\Controllers\FoodItemController::class, 'update'])->name('food-items.update');
 
     Route::get('/donations', [\App\Http\Controllers\DonationController::class, 'index'])->name('donations.index');
     Route::post('/donations', [\App\Http\Controllers\DonationController::class, 'store'])->name('donations.store');

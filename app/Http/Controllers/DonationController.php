@@ -39,6 +39,11 @@ class DonationController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+        if ($user->role !== 'receptor') {
+            return redirect()->back()->with('error', 'Apenas usuários do tipo Receptor podem solicitar alimentos.');
+        }
+
         $request->validate([
             'food_item_id' => 'required|exists:food_items,id',
             'quantity' => 'required|integer|min:1'
