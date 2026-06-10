@@ -11,6 +11,7 @@ Antes de começar, certifique-se de ter instalado em sua máquina:
 - [PHP 8.1+](https://www.php.net/downloads)
 - [Composer](https://getcomposer.org/download/)
 - [Node.js 18+](https://nodejs.org/) e npm
+- [PostgreSQL 15+](https://www.postgresql.org/download/)
 - [Git](https://git-scm.com/)
 
 ---
@@ -25,7 +26,8 @@ Antes de começar, certifique-se de ter instalado em sua máquina:
 4. Renomeie o arquivo `php.ini-development` para `php.ini` dentro da pasta `C:\php`.
 5. Abra o `php.ini` e habilite as extensões necessárias removendo o `;` das linhas:
    ```
-   extension=pdo_mysql
+   extension=pdo_pgsql
+   extension=pgsql
    extension=mbstring
    extension=openssl
    extension=fileinfo
@@ -40,7 +42,7 @@ Antes de começar, certifique-se de ter instalado em sua máquina:
 
 ```bash
 sudo apt update
-sudo apt install php php-cli php-mbstring php-xml php-curl php-zip unzip -y
+sudo apt install php php-cli php-mbstring php-xml php-curl php-zip php-pgsql unzip -y
 php -v
 ```
 
@@ -89,7 +91,52 @@ O **Blade** é a engine de templates nativa do Laravel — não requer instalaç
 
 ---
 
-## ⚙️ 5. Configurando o Projeto
+## 🐘 5. Instalando o PostgreSQL
+
+### Windows
+
+1. Baixe o instalador em: [https://www.postgresql.org/download/windows](https://www.postgresql.org/download/windows)
+2. Execute o instalador e siga o assistente. Anote a **senha** definida para o usuário `postgres`.
+3. Após a instalação, use o **pgAdmin** (incluído) ou o terminal `psql` para criar o banco:
+   ```sql
+   CREATE DATABASE idonate;
+   ```
+
+### Linux (Ubuntu/Debian)
+
+```bash
+sudo apt update
+sudo apt install postgresql postgresql-contrib -y
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Acessar o PostgreSQL e criar o banco
+sudo -u postgres psql
+```
+```sql
+CREATE DATABASE idonate;
+CREATE USER seu_usuario WITH PASSWORD 'sua_senha';
+GRANT ALL PRIVILEGES ON DATABASE idonate TO seu_usuario;
+\q
+```
+
+### macOS (via Homebrew)
+
+```bash
+brew install postgresql@15
+brew services start postgresql@15
+
+# Criar o banco
+psql postgres
+```
+```sql
+CREATE DATABASE idonate;
+\q
+```
+
+---
+
+## ⚙️ 6. Configurando o Projeto
 
 ### Clone o repositório
 
@@ -119,9 +166,9 @@ php artisan key:generate
 
 > Edite o arquivo `.env` com as configurações do seu banco de dados:
 > ```
-> DB_CONNECTION=mysql
+> DB_CONNECTION=pgsql
 > DB_HOST=127.0.0.1
-> DB_PORT=3306
+> DB_PORT=5432
 > DB_DATABASE=idonate
 > DB_USERNAME=seu_usuario
 > DB_PASSWORD=sua_senha
@@ -135,7 +182,7 @@ php artisan migrate
 
 ---
 
-## ▶️ 6. Iniciando o Servidor
+## ▶️ 7. Iniciando o Servidor
 
 ### Iniciar o servidor PHP (Laravel)
 
@@ -165,6 +212,7 @@ npm run dev
 | PHP | Linguagem back-end |
 | Laravel | Framework PHP |
 | Blade | Engine de templates |
+| PostgreSQL | Banco de dados |
 | Tailwind CSS | Estilização |
 | Vite | Bundler de assets |
 | TypeScript | Scripts front-end |
